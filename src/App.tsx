@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import './App.css';
 import IndiaMap from './components/IndiaMap';
+import AddPattaPage from './pages/AddPattaPage';
 
 const states = [
   { id: 'madhya-pradesh', name: 'Madhya Pradesh' },
@@ -9,7 +11,8 @@ const states = [
   { id: 'telangana', name: 'Telangana' }
 ];
 
-function App() {
+function HomePage() {
+  const navigate = useNavigate();
   const [selectedState, setSelectedState] = useState<string | null>(null);
 
   if (selectedState) {
@@ -19,6 +22,14 @@ function App() {
   return (
     <div className="app">
       <h1>VanNiti</h1>
+      <div className="header-actions">
+        <button 
+          className="add-patta-button"
+          onClick={() => navigate('/form')}
+        >
+          + Add Patta
+        </button>
+      </div>
       <div className="state-grid">
         {states.map((state) => (
           <button 
@@ -31,6 +42,15 @@ function App() {
         ))}
       </div>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/form" element={<AddPattaPage />} />
+    </Routes>
   );
 }
 
