@@ -8,7 +8,8 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "seed": "ts-node --transpile-only scripts/seed.ts"
+    "seed": "ts-node --transpile-only scripts/seed.ts",
+    "seed:dummy": "ts-node --transpile-only scripts/seedDummyResources.ts"
   },
   "dependencies": {
     "@types/multer": "^2.0.0",
