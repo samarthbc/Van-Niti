@@ -1,4 +1,6 @@
 import { useState, useRef } from 'react';
+import { mapOcrToFormData } from '../utils/mapOcrToPatta';
+import { processPattaOcr } from '../utils/pattaUtils';
 
 interface PattaFormData {
   pattaNumber: string;
@@ -103,21 +105,9 @@ const AddPattaForm = ({ onClose }: { onClose: () => void }) => {
       const result = await response.json();
       setOcrResult(result);
 
-      if (result && result.holder) {
-        setFormData(prev => ({
-          ...prev,
-          holder: {
-            ...prev.holder,
-            name: result.holder.name || prev.holder.name,
-            fatherName: result.holder.fatherName || prev.holder.fatherName,
-            tribe: result.holder.tribe || prev.holder.tribe,
-          },
-          pattaNumber: result.pattaNumber || prev.pattaNumber,
-          location: {
-            ...prev.location,
-            surveyNumber: result.location?.surveyNumber || prev.location.surveyNumber,
-          },
-        }));
+      if (result) {
+        const mappedData = await processPattaOcr(result);
+        setFormData(mappedData);
       }
     } catch (error) {
       console.error('Error processing image:', error);
