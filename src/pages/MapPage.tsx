@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-  MapContainer,
-  TileLayer,
-  Rectangle,
-  Marker,
-  Popup,
-} from 'react-leaflet';
+import { MapContainer, Rectangle, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { ArrowLeft, Maximize2 } from 'lucide-react';
+import { ArrowLeft, Maximize2, Satellite, Map as MapIcon } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 
 const stateBounds = {
@@ -56,10 +50,44 @@ interface Patta {
   status: string;
 }
 
+// Component to handle layer changes
+const MapLayers = ({ isSatelliteView }: { isSatelliteView: boolean }) => {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (isSatelliteView) {
+      map.eachLayer((layer) => {
+        if (layer instanceof L.TileLayer) {
+          map.removeLayer(layer);
+        }
+      });
+      
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+        maxZoom: 19,
+      }).addTo(map);
+    } else {
+      map.eachLayer((layer) => {
+        if (layer instanceof L.TileLayer) {
+          map.removeLayer(layer);
+        }
+      });
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19,
+      }).addTo(map);
+    }
+  }, [isSatelliteView, map]);
+
+  return null;
+};
+
 const MapPage: React.FC = () => {
   const { state } = useParams<{ state: string }>();
   const navigate = useNavigate();
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isSatelliteView, setIsSatelliteView] = useState(false);
   const [pattas, setPattas] = useState<Patta[]>([]);
 
   const stateData = state ? stateBounds[state as keyof typeof stateBounds] : null;
@@ -126,13 +154,32 @@ const MapPage: React.FC = () => {
                 {stateData.name} - Forest Rights Mapping
               </h1>
             </div>
-            <button
-              onClick={toggleFullscreen}
-              className="btn btn-outline btn-sm"
-            >
-              <Maximize2 className="h-4 w-4" />
-              {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setIsSatelliteView(!isSatelliteView)}
+                className="btn btn-outline btn-sm flex items-center gap-1"
+                title={isSatelliteView ? 'Switch to Map View' : 'Switch to Satellite View'}
+              >
+                {isSatelliteView ? (
+                  <>
+                    <MapIcon className="h-4 w-4" />
+                    <span>Map View</span>
+                  </>
+                ) : (
+                  <>
+                    <Satellite className="h-4 w-4" />
+                    <span>Satellite</span>
+                  </>
+                )}
+              </button>
+              <button
+                onClick={toggleFullscreen}
+                className="btn btn-outline btn-sm flex items-center gap-1"
+              >
+                <Maximize2 className="h-4 w-4" />
+                {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -145,10 +192,7 @@ const MapPage: React.FC = () => {
           className="w-full h-full"
           zoomControl={true}
         >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; OpenStreetMap contributors'
-          />
+          <MapLayers isSatelliteView={isSatelliteView} />
           <Rectangle
             bounds={stateData.bounds as [[number, number], [number, number]]}
             pathOptions={{
