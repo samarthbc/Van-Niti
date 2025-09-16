@@ -3,6 +3,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import pattaRoutes from './routes/patta.routes';
+import ocrRoutes from './routes/ocr.routes';
 import connectDB from './config/db';
 
 // Load environment variables
@@ -21,6 +22,7 @@ connectDB();
 
 // Routes
 app.use('/api/pattas', pattaRoutes);
+app.use('/api/ocr', ocrRoutes);
 
 // Health check endpoint
 app.get('/health', (req: Request, res: Response) => {

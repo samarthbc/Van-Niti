@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import './AddPattaForm.css';
 
 interface PattaFormData {
@@ -40,6 +40,57 @@ interface PattaFormData {
 }
 
 const AddPattaForm = ({ onClose }: { onClose: () => void }) => {
+  const [isUploading, setIsUploading] = useState(false);
+  const [ocrResult, setOcrResult] = useState<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('image', file);
+    
+    setIsUploading(true);
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/ocr/process', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to process image');
+      }
+      
+      const result = await response.json();
+      setOcrResult(result);
+      
+      // Auto-fill form fields if OCR returns structured data
+      if (result && result.holder) {
+        setFormData(prev => ({
+          ...prev,
+          holder: {
+            ...prev.holder,
+            name: result.holder.name || prev.holder.name,
+            fatherName: result.holder.fatherName || prev.holder.fatherName,
+            tribe: result.holder.tribe || prev.holder.tribe,
+          },
+          pattaNumber: result.pattaNumber || prev.pattaNumber,
+          location: {
+            ...prev.location,
+            surveyNumber: result.location?.surveyNumber || prev.location.surveyNumber,
+          }
+        }));
+      }
+    } catch (error) {
+      console.error('Error processing image:', error);
+      alert('Failed to process image. Please try again.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const [formData, setFormData] = useState<PattaFormData>({
     pattaNumber: '',
     holder: {
@@ -92,8 +143,12 @@ const AddPattaForm = ({ onClose }: { onClose: () => void }) => {
             type: 'Point',
             // Ensure coordinates are in [longitude, latitude] order for GeoJSON
             coordinates: [
-              parseFloat(formData.location.coordinates.coordinates[1] || 0), // Longitude
-              parseFloat(formData.location.coordinates.coordinates[0] || 0)  // Latitude
+              typeof formData.location.coordinates.coordinates[1] === 'string' 
+                ? parseFloat(formData.location.coordinates.coordinates[1]) 
+                : Number(formData.location.coordinates.coordinates[1]) || 0, // Longitude
+              typeof formData.location.coordinates.coordinates[0] === 'string'
+                ? parseFloat(formData.location.coordinates.coordinates[0])
+                : Number(formData.location.coordinates.coordinates[0]) || 0  // Latitude
             ]
           },
           area: {
@@ -168,7 +223,33 @@ const AddPattaForm = ({ onClose }: { onClose: () => void }) => {
   };
 
   return (
-    <div className="modal-overlay">
+    <div className="patta-form-container">
+      <div className="image-upload-section">
+        <h3>Upload Patta Document</h3>
+        <div className="upload-area" onClick={() => fileInputRef.current?.click()}>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleImageUpload}
+            accept="image/*"
+            style={{ display: 'none' }}
+          />
+          {isUploading ? (
+            <div className="upload-placeholder">Processing image...</div>
+          ) : (
+            <div className="upload-placeholder">
+              <span>Click to upload an image of your patta document</span>
+              <span className="upload-hint">Supports JPG, PNG (Max 2MB)</span>
+            </div>
+          )}
+        </div>
+        {ocrResult && (
+          <div className="ocr-result">
+            <h4>Extracted Information:</h4>
+            <pre>{JSON.stringify(ocrResult, null, 2)}</pre>
+          </div>
+        )}
+      </div>
       <div className="add-patta-form">
         <div className="form-header">
           <h2>Add New Patta</h2>
