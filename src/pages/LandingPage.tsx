@@ -40,54 +40,10 @@ const LandingPage: React.FC = () => {
     navigate(`/map/${stateCode}`);
   };
 
-  const handleAdminLogin = () => {
-    navigate('/login');
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-base-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-
-            {/* Left side (Logo + Name) */}
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-primary rounded-lg">
-                <Map className="h-6 w-6 text-white" />
-              </div>
-              <h1 className="text-xl font-bold text-gray-900">Van-Niti</h1>
-            </div>
-
-            {/* Center (Navigation links) */}
-            <nav className="absolute left-1/2 transform -translate-x-1/2 flex items-center space-x-6">
-              <button 
-                onClick={() => navigate('/')} 
-                className="text-gray-700 hover:text-primary font-medium"
-              >
-                Home
-              </button>
-              <button 
-                onClick={() => navigate('/form')} 
-                className="text-gray-700 hover:text-primary font-medium"
-              >
-                Add Patta
-              </button>
-              <button 
-                onClick={() => navigate('#')} 
-                className="text-gray-700 hover:text-primary font-medium"
-              >
-                About
-              </button>
-            </nav>
-
-            {/* Right side (Empty or add something later) */}
-            <div></div>
-
-          </div>
-        </div>
-      </header>
-
+      
 
       {/* Hero Section */}
       <section className="py-16 px-4">
