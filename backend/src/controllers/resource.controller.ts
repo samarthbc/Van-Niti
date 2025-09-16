@@ -19,6 +19,8 @@ export const createResource = async (req: Request, res: Response) => {
   }
 };
 
+import { getRecommendedSchemes } from '../utils/schemeRecommender';
+
 // Get all resources with optional filtering
 export const getResources = async (req: Request, res: Response) => {
   try {
@@ -28,8 +30,19 @@ export const getResources = async (req: Request, res: Response) => {
     if (state) filter.state = state;
     if (district) filter.district = district;
     
-    const resources = await Resource.find(filter).sort({ state: 1, district: 1, village: 1 });
-    res.status(200).json({ success: true, count: resources.length, data: resources });
+    let resources = await Resource.find(filter).sort({ state: 1, district: 1, village: 1 });
+    
+    // Add recommended schemes to each resource
+    const resourcesWithSchemes = resources.map(resource => ({
+      ...resource.toObject(),
+      recommendedSchemes: getRecommendedSchemes(resource.toObject())
+    }));
+    
+    res.status(200).json({ 
+      success: true, 
+      count: resourcesWithSchemes.length, 
+      data: resourcesWithSchemes 
+    });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -42,7 +55,13 @@ export const getResourceById = async (req: Request, res: Response) => {
     if (!resource) {
       return res.status(404).json({ success: false, message: 'Resource not found' });
     }
-    res.status(200).json({ success: true, data: resource });
+    
+    const resourceWithSchemes = {
+      ...resource.toObject(),
+      recommendedSchemes: getRecommendedSchemes(resource.toObject())
+    };
+    
+    res.status(200).json({ success: true, data: resourceWithSchemes });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
