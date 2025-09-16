@@ -75,13 +75,20 @@ const MapPage: React.FC = () => {
     const fetchPattas = async () => {
       try {
         if (!state) return;
-        const formattedState = state
-          .split('-')
-          .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-          .join(' ');
+        let formattedState = state
+        if(state === 'mp')
+          formattedState = 'Madhya%20Pradesh'
+        if(state === 'tripura')
+          formattedState = 'Tripura'
+        if(state === 'odisha')
+          formattedState = 'Odisha'
+        if(state === 'telangana')
+          formattedState = 'Telangana'
+
         const res = await fetch(`http://localhost:5000/api/pattas/state/${formattedState}`);
         const data = await res.json();
         if (data.success) setPattas(data.data);
+        console.log(data);
       } catch (err) {
         console.error('Error fetching pattas:', err);
       }
