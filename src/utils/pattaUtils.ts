@@ -7,6 +7,9 @@ const KNOWN_VILLAGES = ["Badharghat", "Agartala", "Dukli"];
 
 // ------------------- Helper Functions -------------------
 
+/**
+ * Normalize text for fuzzy matching
+ */
 export function normalizeText(str: string = ""): string {
   return str.toLowerCase().replace(/[^a-z0-9\s]/gi, "").trim();
 }

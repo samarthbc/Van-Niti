@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
-import { mapOcrToFormData } from '../utils/pattaUtils';
+import { mapOcrToFormData } from '../utils/mapOcrToPatta';
+import { processPattaOcr } from '../utils/pattaUtils';
 
 interface PattaFormData {
   pattaNumber: string;
@@ -105,7 +106,7 @@ const AddPattaForm = ({ onClose }: { onClose: () => void }) => {
       setOcrResult(result);
 
       if (result) {
-        const mappedData = await mapOcrToFormData(result);
+        const mappedData = await processPattaOcr(result);
         setFormData(mappedData);
       }
     } catch (error) {
