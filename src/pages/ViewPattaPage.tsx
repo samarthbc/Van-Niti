@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FileText, Map } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { FileText } from 'lucide-react';
 
 type Patta = {
   _id: string;
@@ -46,7 +45,6 @@ const ViewPattaPage: React.FC = () => {
   const [filteredState, setFilteredState] = useState<string>('all');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPattas = async () => {
@@ -70,7 +68,7 @@ const ViewPattaPage: React.FC = () => {
       : pattas.filter(p => p.location.state === filteredState);
 
   return (
-    <div className="min-h-screen bg-base-100">
+    <div className="min-h-screen bg-base-100 pt-12">
       <main className="max-w-7xl mx-auto px-4 py-10">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-3xl font-bold text-gray-900">View FRA Pattas</h2>

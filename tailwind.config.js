@@ -11,6 +11,11 @@ export default {
         'base-100': '#FFFFFF',
         'base-200': '#F9FAFB',
         'base-300': '#E5E7EB',
+      },
+      fontFamily: {
+        heading: ['Cinzel', 'serif'],
+        serif: ['Playfair Display', 'serif'], // or replace with 'Poppins' / 'Inter'
+        sans: ['Inter', 'sans-serif'],
       }
     },
   },

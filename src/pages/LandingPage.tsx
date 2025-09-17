@@ -41,18 +41,24 @@ const LandingPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200">
-      {/* Header */}
-      
-
+    <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200">      
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 -z-10 h-6/7 bg-cover bg-center rounded-b-[50%] shadow-lg"
+        style={{ 
+          backgroundImage: "url('https://images.pexels.com/photos/957024/forest-trees-perspective-bright-957024.jpeg')", 
+          backgroundAttachment: "fixed"
+        }}
+      />
+      <div className="absolute inset-0 -z-10 bg-white/50 rounded-b-[50%]" />
       {/* Hero Section */}
-      <section className="py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+      <section className="relative pt-32 pb-16 px-4 overflow-hidden">
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <h2 className="text-4xl md:text-5xl font-bold text-black mb-6 font-heading" >
             Van-Niti
             <span className="text-primary block">FRA Patta Management</span>
           </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-black mb-8 max-w-2xl mx-auto font-serif">
             Digital platform for managing Forest Rights Act pattas across Indian states. 
             Select a state below to explore detailed mapping and patta information.
           </p>
@@ -63,8 +69,8 @@ const LandingPage: React.FC = () => {
       <section className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">Select a State</h3>
-            <p className="text-gray-600">Click on any state card to view detailed mapping and patta data</p>
+            <h3 className="text-3xl font-bold font-sans text-gray-900 mb-4">Select a State</h3>
+            <p className="text-gray-600 font-sans">Click on any state card to view detailed mapping and patta data</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
