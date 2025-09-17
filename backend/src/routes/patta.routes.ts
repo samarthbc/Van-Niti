@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as pattaController from '../controllers/patta.controller';
+import { getPattasByStateWithRecommendations } from '../controllers/patta.controller';
 
 const router = Router();
 
@@ -16,6 +17,14 @@ router.get('/state/:state', pattaController.getPattasByState);
  * @access  Public
  */
 router.get('/', pattaController.getPattas);
+
+/**
+ * @route   GET /api/pattas/state/:state/recommendations
+ * @desc    Get all pattas for a specific state with scheme recommendations
+ * @access  Public
+ * @query   includeRecommendations - Set to 'false' to disable recommendations (default: 'true')
+ */
+router.get('/state/:state/recommendations', pattaController.getPattasByStateWithRecommendations);
 
 /**
  * @route   GET /api/pattas/location

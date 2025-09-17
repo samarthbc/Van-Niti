@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Patta, IPatta } from '../models/patta.model';
 import mongoose from 'mongoose';
+import { getRecommendedSchemes, createIndividualProfile } from '../utils/individualSchemeRecommender';
 
 // Create a new patta
 export const createPatta = async (req: Request, res: Response) => {
@@ -113,6 +114,69 @@ export const getPattasByState = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: 'Server error'
+    });
+  }
+};
+
+// Get pattas by state with scheme recommendations
+export const getPattasByStateWithRecommendations = async (req: Request, res: Response) => {
+  try {
+    const { state } = req.params;
+    const { includeRecommendations = 'true' } = req.query;
+    
+    if (!state) {
+      return res.status(400).json({
+        success: false,
+        message: 'State parameter is required'
+      });
+    }
+    
+    // Fetch pattas for the state
+    const pattas = await Patta.find({ 'location.state': state })
+      .sort({ 'holder.name': 1 })
+      .select('pattaNumber holder location area rights')
+      .lean();
+    
+    // Only generate recommendations if explicitly requested
+    let pattasWithRecommendations = [];
+    
+    if (includeRecommendations === 'true') {
+      // Process each patta to get recommendations
+      pattasWithRecommendations = pattas.map(patta => {
+        // Create individual profile from patta data
+        const profile = createIndividualProfile(patta, {});
+        
+        // Get recommended schemes for this patta
+        const recommendedSchemes = getRecommendedSchemes(profile, 3); // Get top 3 recommendations
+        
+        return {
+          ...patta,
+          recommendedSchemes: recommendedSchemes.map(scheme => ({
+            id: scheme.id,
+            name: scheme.name,
+            ministry: scheme.ministry,
+            description: scheme.description,
+            benefits: scheme.benefits,
+            requiredDocuments: scheme.requiredDocuments
+          }))
+        };
+      });
+    } else {
+      // If recommendations not requested, just return the pattas as-is
+      pattasWithRecommendations = pattas;
+    }
+    
+    res.json({
+      success: true,
+      count: pattasWithRecommendations.length,
+      data: pattasWithRecommendations
+    });
+  } catch (error) {
+    console.error('Error fetching pattas by state with recommendations:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
     });
   }
 };

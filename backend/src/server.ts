@@ -6,6 +6,7 @@ import pattaRoutes from './routes/patta.routes';
 import ocrRoutes from './routes/ocr.routes';
 import resourceRoutes from './routes/resource.routes';
 import ocrParseRoutes from './routes/patta.mapper.routes';
+import individualSchemeRoutes from './routes/individualScheme.routes';
 import connectDB from './config/db';
 
 // Load environment variables
@@ -27,6 +28,7 @@ app.use('/api/pattas', pattaRoutes);
 app.use('/api/ocr', ocrRoutes);
 app.use('/api/resources', resourceRoutes);
 app.use('/api/ai', ocrParseRoutes);
+app.use('/api/individual-schemes', individualSchemeRoutes);
 
 // Health check endpoint
 app.get('/health', (req: Request, res: Response) => {
