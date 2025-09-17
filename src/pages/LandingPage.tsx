@@ -8,28 +8,32 @@ const states = [
     code: 'mp',
     description: 'Central India state with rich forest resources',
     color: 'from-blue-500 to-blue-600',
-    stats: { villages: '1,245', pattas: '8,950' }
+    stats: { villages: '1,245', pattas: '8,950' },
+    img: "./mp.webp"
   },
   {
     name: 'Tripura',
     code: 'tripura',
     description: 'Northeastern state with diverse tribal communities',
     color: 'from-green-500 to-green-600',
-    stats: { villages: '892', pattas: '5,670' }
+    stats: { villages: '892', pattas: '5,670' },
+    img: "./tripura.webp"
   },
   {
     name: 'Odisha',
     code: 'odisha',
     description: 'Eastern coastal state with significant forest cover',
     color: 'from-purple-500 to-purple-600',
-    stats: { villages: '2,156', pattas: '12,340' }
+    stats: { villages: '2,156', pattas: '12,340' },
+    img: "./odissa.webp"
   },
   {
     name: 'Telangana',
     code: 'telangana',
     description: 'Southern state with modern forest management',
     color: 'from-orange-500 to-orange-600',
-    stats: { villages: '1,678', pattas: '9,880' }
+    stats: { villages: '1,678', pattas: '9,880' },
+    img: "./telangana.webp"
   }
 ];
 
@@ -46,7 +50,7 @@ const LandingPage: React.FC = () => {
       <div 
         className="absolute inset-0 -z-10 h-6/7 bg-cover bg-center rounded-b-[50%] shadow-lg"
         style={{ 
-          backgroundImage: "url('https://images.pexels.com/photos/957024/forest-trees-perspective-bright-957024.jpeg')", 
+          backgroundImage: "url('./bg.webp')", 
           backgroundAttachment: "fixed"
         }}
       />
@@ -80,7 +84,10 @@ const LandingPage: React.FC = () => {
                 onClick={() => handleStateClick(state.code)}
                 className="card bg-white shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 rounded-xl border border-black"
               >
-                <div className={`h-32 bg-gradient-to-r ${state.color} rounded-t-xl flex items-center justify-center`}>
+                <div
+                  className="h-32 rounded-t-xl bg-cover bg-center flex items-center justify-center"
+                  style={{ backgroundImage: `url(${state.img})` }}
+                >
                   <MapPin className="h-12 w-12 text-white" />
                 </div>
                 <div className="card-body p-6">

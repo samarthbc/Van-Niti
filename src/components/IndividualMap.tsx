@@ -21,7 +21,12 @@ interface Patta {
       coordinates: [number, number]; // [lng, lat]
     };
   };
+  recommendedSchemes?: {
+    name: string;
+    description: string;
+  }[];
 }
+
 
 
 const stateBounds = {
@@ -105,7 +110,7 @@ const IndividualMap = ({ stateName, isSatelliteView }: IndividualMapProps) => {
           formattedState = "Madhya%20Pradesh";
 
         const res = await fetch(
-          `http://localhost:5000/api/pattas/state/${formattedState}`
+          `http://localhost:5000/api/pattas/state/${formattedState}/recommendations`
         );
         const data = await res.json();
         if (data.success) setPattas(data.data);
@@ -119,7 +124,7 @@ const IndividualMap = ({ stateName, isSatelliteView }: IndividualMapProps) => {
   if (!stateData) return <div className="p-4">State not found.</div>;
 
   return (
-    <div className="h-full w-full relative">
+    <div className="h-screen w-full relative">
       <MapContainer
         center={stateData.center}
         zoom={7}
@@ -143,37 +148,50 @@ const IndividualMap = ({ stateName, isSatelliteView }: IndividualMapProps) => {
           const [lng, lat] = patta.location.coordinates.coordinates;
           return (
             <Marker key={patta._id} position={[lat, lng]} icon={pattaIcon}>
-              <Popup>
-                <div>
-                  <h4>Patta #{patta.pattaNumber}</h4>
-                  <p>
-                    <b>Holder:</b> {patta.holder.name}
-                  </p>
-                  <p>
-                    <b>Village:</b> {patta.location.village}
-                  </p>
-                  <p>
-                    <b>Area:</b> {patta.location.area.value}{" "}
-                    {patta.location.area.unit}
-                  </p>
-                  <p>
-                    <b>Status:</b> {patta.status}
-                  </p>
-                </div>
-              </Popup>
+                <Popup>
+                    <div>
+                    <h4 className="font-bold">Patta #{patta.pattaNumber}</h4>
+                    <p>
+                        <b>Holder:</b> {patta.holder.name}
+                    </p>
+                    <p>
+                        <b>Village:</b> {patta.location.village}
+                    </p>
+                    <p>
+                        <b>Area:</b> {patta.location.area.value} {patta.location.area.unit}
+                    </p>
+                    <p>
+                        <b>Status:</b> {patta.status}
+                    </p>
+
+                    {/* Recommended Schemes */}
+                    {patta.recommendedSchemes && patta.recommendedSchemes.length > 0 && (
+                        <div className="mt-3">
+                        <h5 className="font-semibold">Recommended Schemes:</h5>
+                        <ul className="list-disc pl-5 text-sm">
+                            {patta.recommendedSchemes.map((scheme, idx) => (
+                            <li key={idx}>
+                                <b>{scheme.name}</b>: {scheme.description}
+                            </li>
+                            ))}
+                        </ul>
+                        </div>
+                    )}
+                    </div>
+                </Popup>
             </Marker>
           );
         })}
       </MapContainer>
 
       {/* Info Panel */}
-      <div className="absolute top-4 right-4 bg-white rounded-lg shadow-lg p-4 max-w-sm z-40">
+      <div className="absolute top-4 right-4 bg-white rounded-lg shadow-lg p-4 max-w-sm z-400">
         <h3 className="font-bold text-lg mb-2">{stateData.name}</h3>
         <p className="text-sm text-gray-600">Showing {pattas.length} pattas</p>
       </div>
 
       {/* Legend */}
-      <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-lg p-4 z-40">
+      <div className="absolute bottom-30 left-4 bg-white rounded-lg shadow-lg p-4 z-400">
         <h4 className="font-semibold mb-2">Legend</h4>
         <div className="space-y-2 text-sm">
           <div className="flex items-center space-x-2">

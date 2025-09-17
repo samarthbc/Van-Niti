@@ -127,55 +127,79 @@ const CommunityMap = ({ stateName, isSatelliteView }: CommunityMapProps) => {
   };
 
   return (
-    <MapContainer
-      center={stateData.center}
-      zoom={7}
-      style={{ height: "100%", width: "100%" }}
-    >
-      <MapLayers isSatelliteView={isSatelliteView} />
-      {villages.map((v) => {
-        const [lng, lat] = v.location.coordinates;
-        const polygon = createPolygon(lat, lng);
+    <>
+      <MapContainer
+        center={stateData.center}
+        zoom={7}
+        style={{ height: "100%", width: "100%" }}
+      >
+        <MapLayers isSatelliteView={isSatelliteView} />
+        {villages.map((v) => {
+          const [lng, lat] = v.location.coordinates;
+          const polygon = createPolygon(lat, lng);
 
-        return (
-          <Polygon
-            key={v._id}
-            positions={polygon}
-            pathOptions={{
-              color: getColor(v.povertyRatio),
-              fillColor: getColor(v.povertyRatio),
-              fillOpacity: 0.5,
-            }}
-          >
-            <Popup maxWidth={300} minWidth={250}>
-              <div className="max-h-60 overflow-y-auto space-y-2">
-                <h3 className="font-bold text-lg">{v.village}</h3>
-                <p><b>Population:</b> {v.population}</p>
-                <p><b>Poverty:</b> {v.povertyRatio}%</p>
-                <p><b>District:</b> {v.district}</p>
-                <p><b>Literacy:</b> {v.literacyRate}%</p>
-                <p><b>Malnutrition:</b> {v.malnutritionRate}%</p>
+          return (
+            <Polygon
+              key={v._id}
+              positions={polygon}
+              pathOptions={{
+                color: getColor(v.povertyRatio),
+                fillColor: getColor(v.povertyRatio),
+                fillOpacity: 0.5,
+              }}
+            >
+              <Popup maxWidth={300} minWidth={250}>
+                <div className="max-h-60 overflow-y-auto space-y-2">
+                  <h3 className="font-bold text-lg">{v.village}</h3>
+                  <p><b>Population:</b> {v.population}</p>
+                  <p><b>Poverty:</b> {v.povertyRatio}%</p>
+                  <p><b>District:</b> {v.district}</p>
+                  <p><b>Literacy:</b> {v.literacyRate}%</p>
+                  <p><b>Malnutrition:</b> {v.malnutritionRate}%</p>
 
-                <h4 className="text-md font-semibold mt-2">Recommended Schemes</h4>
-                {v.recommendedSchemes?.length ? (
-                  <ul className="space-y-2">
-                    {v.recommendedSchemes.map((scheme) => (
-                      <li key={scheme.id} className="p-2 border rounded bg-gray-50">
-                        <p className="font-semibold">{scheme.name}</p>
-                        <p className="text-gray-600 text-sm">{scheme.focusArea}</p>
-                        <p className="text-xs text-gray-500">{scheme.ministry}</p>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-gray-500 italic">No schemes available</p>
-                )}
-              </div>
-            </Popup>
-          </Polygon>
-        );
-      })}
-    </MapContainer>
+                  <h4 className="text-md font-semibold mt-2">Recommended Schemes</h4>
+                  {v.recommendedSchemes?.length ? (
+                    <ul className="space-y-2">
+                      {v.recommendedSchemes.map((scheme) => (
+                        <li key={scheme.id} className="p-2 border rounded bg-gray-50">
+                          <p className="font-semibold">{scheme.name}</p>
+                          <p className="text-gray-600 text-sm">{scheme.focusArea}</p>
+                          <p className="text-xs text-gray-500">{scheme.ministry}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-500 italic">No schemes available</p>
+                  )}
+                </div>
+              </Popup>
+            </Polygon>
+          );
+        })}
+      </MapContainer>
+      {/* Legend */}
+      <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-lg p-4 z-400">
+        <h4 className="font-semibold mb-2">Legend</h4>
+        <div className="space-y-2 text-sm">
+          <div className="flex items-center space-x-2">
+            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: "#d73027" }}></div>
+            <span>Poverty {'>'} 60%</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: "#fc8d59" }}></div>
+            <span>Poverty 41-60%</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: "#fee08b" }}></div>
+            <span>Poverty 21-40%</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: "#91cf60" }}></div>
+            <span>Poverty ≤ 20%</span>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 
