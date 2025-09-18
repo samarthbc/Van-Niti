@@ -8,28 +8,32 @@ const states = [
     code: 'mp',
     description: 'Central India state with rich forest resources',
     color: 'from-blue-500 to-blue-600',
-    stats: { villages: '1,245', pattas: '8,950' }
+    stats: { villages: '1,245', pattas: '8,950' },
+    img: "./mp.webp"
   },
   {
     name: 'Tripura',
     code: 'tripura',
     description: 'Northeastern state with diverse tribal communities',
     color: 'from-green-500 to-green-600',
-    stats: { villages: '892', pattas: '5,670' }
+    stats: { villages: '892', pattas: '5,670' },
+    img: "./tripura.webp"
   },
   {
     name: 'Odisha',
     code: 'odisha',
     description: 'Eastern coastal state with significant forest cover',
     color: 'from-purple-500 to-purple-600',
-    stats: { villages: '2,156', pattas: '12,340' }
+    stats: { villages: '2,156', pattas: '12,340' },
+    img: "./odissa.webp"
   },
   {
     name: 'Telangana',
     code: 'telangana',
     description: 'Southern state with modern forest management',
     color: 'from-orange-500 to-orange-600',
-    stats: { villages: '1,678', pattas: '9,880' }
+    stats: { villages: '1,678', pattas: '9,880' },
+    img: "./telangana.webp"
   }
 ];
 
@@ -41,18 +45,24 @@ const LandingPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200">
-      {/* Header */}
-      
-
+    <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200">      
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 -z-10 h-6/7 bg-cover bg-center rounded-b-[50%] shadow-lg"
+        style={{ 
+          backgroundImage: "url('./bg.webp')", 
+          backgroundAttachment: "fixed"
+        }}
+      />
+      <div className="absolute inset-0 -z-10 bg-white/50 rounded-b-[50%]" />
       {/* Hero Section */}
-      <section className="py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+      <section className="relative pt-32 pb-16 px-4 overflow-hidden">
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <h2 className="text-4xl md:text-5xl font-bold text-black mb-6 font-heading" >
             Van-Niti
             <span className="text-primary block">FRA Patta Management</span>
           </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-black mb-8 max-w-2xl mx-auto font-serif">
             Digital platform for managing Forest Rights Act pattas across Indian states. 
             Select a state below to explore detailed mapping and patta information.
           </p>
@@ -63,8 +73,8 @@ const LandingPage: React.FC = () => {
       <section className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">Select a State</h3>
-            <p className="text-gray-600">Click on any state card to view detailed mapping and patta data</p>
+            <h3 className="text-3xl font-bold font-sans text-gray-900 mb-4">Select a State</h3>
+            <p className="text-gray-600 font-sans">Click on any state card to view detailed mapping and patta data</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -74,7 +84,10 @@ const LandingPage: React.FC = () => {
                 onClick={() => handleStateClick(state.code)}
                 className="card bg-white shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 rounded-xl border border-black"
               >
-                <div className={`h-32 bg-gradient-to-r ${state.color} rounded-t-xl flex items-center justify-center`}>
+                <div
+                  className="h-32 rounded-t-xl bg-cover bg-center flex items-center justify-center"
+                  style={{ backgroundImage: `url(${state.img})` }}
+                >
                   <MapPin className="h-12 w-12 text-white" />
                 </div>
                 <div className="card-body p-6">
