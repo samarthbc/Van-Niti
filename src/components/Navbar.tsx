@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import vanniti from '../assets/vanniti.png'
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -15,7 +16,12 @@ const Navbar: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
             {/* Left: Logo */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
+              <img 
+                src={vanniti} 
+                alt="Van-Niti Logo" 
+                className="h-8 md:h-12 object-contain"
+              />
                 <h1 className="text-xl font-bold font-heading text-gray-900">Van-Niti</h1>
             </div>
 
