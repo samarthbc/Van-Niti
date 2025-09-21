@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import { mapOcrToFormData } from '../utils/mapOcrToPatta';
 import { processPattaOcr } from '../utils/pattaUtils';
 
 interface PattaFormData {

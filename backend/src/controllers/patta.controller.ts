@@ -55,34 +55,43 @@ export const createPatta = async (req: Request, res: Response) => {
 // Get all pattas with optional filtering
 export const getPattas = async (req: Request, res: Response) => {
   try {
-    const { state, district, status, search } = req.query;
-    
+    const { state, district, status, search, page = '1', limit = '10' } = req.query;
+
     // Build query
     const query: any = {};
-    
     if (state) query['location.state'] = state;
     if (district) query['location.district'] = district;
     if (status) query.status = status;
-    
-    // Text search
     if (search) {
       query.$text = { $search: search as string };
     }
-    
+
+    const pageNum = parseInt(page as string, 10) || 1;
+    const limitNum = parseInt(limit as string, 10) || 10;
+    const skip = (pageNum - 1) * limitNum;
+
+    // Get total count for pagination metadata
+    const total = await Patta.countDocuments(query);
+
     const pattas = await Patta.find(query)
       .sort({ 'holder.name': 1 })
+      .skip(skip)
+      .limit(limitNum)
       .lean();
-    
+
     res.json({
       success: true,
       count: pattas.length,
-      data: pattas
+      total,
+      page: pageNum,
+      pages: Math.ceil(total / limitNum),
+      data: pattas,
     });
   } catch (error) {
     console.error('Error fetching pattas:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error'
+      message: 'Server error',
     });
   }
 };

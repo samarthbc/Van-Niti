@@ -28,6 +28,8 @@ Your job:
   ["West Tripura", "South Tripura", "North Tripura", "Dhalai"].
 - the states would only be tripura, telangana, madhya pradesh, odissa
 - Ensure date is in YYYY-MM-DD format.
+- Based on the address like the state, district and village, if the coordinates are not already given or if it is zero, make sure to find its value and populate it.
+- IMPORTANT: GeoJSON coordinates must be in [longitude, latitude] format, not [latitude, longitude]. Make sure the coordinates stay within the mentioned state
 - Output strictly valid JSON matching this TypeScript interface:
 
 interface PattaFormData {

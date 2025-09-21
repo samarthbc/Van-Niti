@@ -27,8 +27,6 @@ interface Patta {
   }[];
 }
 
-
-
 const stateBounds = {
   mp: {
     bounds: [[21.0, 74.0], [26.5, 82.5]],
